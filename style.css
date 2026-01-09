@@ -11,10 +11,23 @@ body {
   background-color: black;
 }
 
+canvas-div{
+  display: flex;
+}
+
 canvas {
+  opacity: 0.4;
   position: fixed;
   left: 0;
   top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#draw2{
+   position: fixed;
+  left: 10;
+  top: 10;
   width: 100%;
   height: 100%;
 }
