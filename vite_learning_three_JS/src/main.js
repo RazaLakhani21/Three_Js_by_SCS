@@ -19,14 +19,21 @@ camera.position.z = 5;
 const canvas = document.querySelector(".draw");
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
+
+window.addEventListener("resize", () => {
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+});
+
 document.body.appendChild(renderer.domElement);
 
 function animate() {
   window.requestAnimationFrame(animate);
   renderer.render(scene, camera);
   cube.rotation.x -= 0.001;
-  cube.rotation.y += 0.0001;
+  cube.rotation.y += 0.01;
 }
-// animate();
+animate();
 
 // renderer.setAnimationLoop(animate);
