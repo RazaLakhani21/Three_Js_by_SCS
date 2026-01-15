@@ -4,34 +4,56 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 const scene = new THREE.Scene();
 
-const highIntensityLight = new THREE.DirectionalLight(0xffffff, 2); // white light with intensity 1 (simulates sunlight)
-highIntensityLight.position.set(10, 20, 15);
-scene.add(highIntensityLight);
-
-const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5); // white light with intensity 0.5 (provides additional lighting)
-directionalLight.position.set(5, 10, 7.5);
-scene.add(directionalLight);
-
-const ambientLight = new THREE.AmbientLight(0x404040); // soft white light (fills shadows with a soft light)
+let ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambientLight);
 
-const pointLight = new THREE.PointLight(0xffffff, 1, 100); // white light with intensity 1 and distance 100 (simulates a light bulb)
-pointLight.position.set(0, 5, 0);
-scene.add(pointLight);
+let directional = new THREE.DirectionalLight(0xffffff, 1);
+directional.position.set(-5, 5, 1);
+scene.add(directional);
 
-const highIntensityLightHelper = new THREE.DirectionalLightHelper(
-  highIntensityLight,
-  5
-);
-scene.add(highIntensityLightHelper);
-const directionalLightHelper = new THREE.DirectionalLightHelper(
-  directionalLight,
-  5
-);
+let point = new THREE.PointLight(0xffffff, 1, 10, 2);
+point.position.set(1, -1, 1);
+scene.add(point);
+
+// let ambientHelper = new THREE.Amb
+let directionalLightHelper = new THREE.DirectionalLightHelper(directional, 2);
 scene.add(directionalLightHelper);
-// const ambientLightHelper = new THREE.AmbientLightHelper()
-const pointLightHelper = new THREE.PointLightHelper(pointLight, 5);
+
+const sphereSize = 0.2;
+let pointLightHelper = new THREE.PointLightHelper(point, sphereSize);
 scene.add(pointLightHelper);
+
+//! Removed lights variable as learning more deeply about lights
+// const highIntensityLight = new THREE.DirectionalLight(0xffffff, 2); // white light with intensity 1 (simulates sunlight)
+// highIntensityLight.position.set(10, 20, 15);
+// scene.add(highIntensityLight);
+
+// const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5); // white light with intensity 0.5 (provides additional lighting)
+// directionalLight.position.set(5, 10, 7.5);
+// scene.add(directionalLight);
+
+// const ambientLight = new THREE.AmbientLight(0x404040); // soft white light (fills shadows with a soft light)
+// scene.add(ambientLight);
+
+// const pointLight = new THREE.PointLight(0xffffff, 1, 100); // white light with intensity 1 and distance 100 (simulates a light bulb)
+// pointLight.position.set(0, 5, 0);
+// scene.add(pointLight);
+
+// const highIntensityLightHelper = new THREE.DirectionalLightHelper(
+//   highIntensityLight,
+//   5
+// );
+// scene.add(highIntensityLightHelper);
+
+// const directionalLightHelper = new THREE.DirectionalLightHelper(
+//   directionalLight,
+//   5
+// );
+// scene.add(directionalLightHelper);
+
+// // const ambientLightHelper = new THREE.AmbientLightHelper()
+// const pointLightHelper = new THREE.PointLightHelper(pointLight, 5);
+// scene.add(pointLightHelper);
 
 let loader = new THREE.TextureLoader();
 let color = loader.load("../text/color.jpg");
@@ -88,23 +110,44 @@ window.addEventListener("resize", () => {
 //Create a GUI panel for material and mesh settings
 const gui = new lil.GUI();
 
+// Adding lil-gui panel for Lights
+const lightFolder = gui.addFolder("Lights");
+
+const ambientFolder = lightFolder.addFolder("Ambient Light");
+ambientFolder.add(ambientLight, "intensity", 0, 2).name("Intensity");
+ambientFolder.open();
+
+// Directional Light Controls
+const directionalFolder = lightFolder.addFolder("Directional Light");
+directionalFolder.add(directional, "intensity", 0, 5).name("Intensity");
+directionalFolder.add(directional.position, "x", -10, 10).name("Position X");
+directionalFolder.add(directional.position, "y", -10, 10).name("Position Y");
+directionalFolder.add(directional.position, "z", -10, 10).name("Position Z");
+directionalFolder.open();
+
+// Point Light Controls
+const pointFolder = lightFolder.addFolder("Point Light");
+pointFolder.add(point, "intensity", 0, 5).name("Intensity");
+pointFolder.add(point.position, "x", -10, 10).name("Position X");
+pointFolder.add(point.position, "y", -10, 10).name("Position Y");
+pointFolder.add(point.position, "z", -10, 10).name("Position Z");
+pointFolder.open();
+
 // Material Settings
 const materialFolder = gui.addFolder("Material");
 materialFolder.add(material, "roughness", 0, 1).name("Roughness");
 materialFolder.add(material, "metalness", 0, 1).name("Metalness");
-materialFolder.addColor(material, "color", 0, 1).name("Color");
 materialFolder.open();
 
-//Mesh settings
-const meshFolder = gui.addFolder("Mesh")
-meshFolder.add(cube.scale, 'x', 0.1, 5).name('Scale X')
-meshFolder.add(cube.scale, 'y', 0.1, 5).name('Scale Y')
-meshFolder.add(cube.scale, 'z', 0.1, 5).name('Scale Z')
-meshFolder.add(cube.position, 'x', -10, 10).name('Position X')
-meshFolder.add(cube.position, 'y', -10, 10).name('Position Y')
-meshFolder.add(cube.position, 'z', -10, 10).name('Position Z')
+// Mesh settings
+const meshFolder = gui.addFolder("Mesh");
+meshFolder.add(cube.scale, "x", 0.1, 5).name("Scale X");
+meshFolder.add(cube.scale, "y", 0.1, 5).name("Scale Y");
+meshFolder.add(cube.scale, "z", 0.1, 5).name("Scale Z");
+meshFolder.add(cube.position, "x", -10, 10).name("Position X");
+meshFolder.add(cube.position, "y", -10, 10).name("Position Y");
+meshFolder.add(cube.position, "z", -10, 10).name("Position Z");
 meshFolder.open();
-
 
 document.body.appendChild(renderer.domElement);
 
