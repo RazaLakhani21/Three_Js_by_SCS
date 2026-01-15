@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import * as lil from "lil-gui";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
+import { GLTFLoader } from "three/examples/jsm/Addons.js";
 
 const scene = new THREE.Scene();
 
@@ -70,8 +72,7 @@ const camera = new THREE.PerspectiveCamera(
 
 //! controls.update() must be called after any manual changes to the camera's transform
 
-camera.position;
-
+camera.position.set(0, 0, 8);
 const geometry = new THREE.BoxGeometry(3, 1.8, 2);
 // const geometry = new THREE.SphereGeometry(1, 5, 5, 2.5, 1.2);
 
@@ -81,7 +82,8 @@ const geometry = new THREE.BoxGeometry(3, 1.8, 2);
 // const material = new THREE.MeshBasicMaterial({ color: "red", wireframe:false, roughness: 1, metalness: 1 });
 // const material = new THREE.MeshStandardMaterial({ color: "red", wireframe:false, roughness: 1, metalness: 1 });
 const material = new THREE.MeshStandardMaterial({
-  map: color,
+  // map: color,
+  color: "blue",
   roughnessMap: roughness,
   normalMap: normal,
   // displacementMap: height,
@@ -89,8 +91,9 @@ const material = new THREE.MeshStandardMaterial({
 });
 const cube = new THREE.Mesh(geometry, material);
 
-scene.add(cube);
-camera.position.z = 5;
+// scene.add(cube);
+// camera.position.z = 5;
+// camera.position.z = 5;
 
 const canvas = document.querySelector(".draw");
 const renderer = new THREE.WebGLRenderer({
@@ -99,6 +102,27 @@ const renderer = new THREE.WebGLRenderer({
   side: THREE.DoubleSide,
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = -1;
+renderer.outputEncoding = THREE.sRGBEncoding;
+
+//ADD HDRI Lighting
+const rgbeloader = new RGBELoader();
+rgbeloader.load(
+  "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/zwartkops_pit_4k.hdr",
+  function (texture) {
+    texture.mapping = THREE.EquirectangularReflectionMapping;
+    scene.environment = texture;
+    // scene.background = texture;
+  }
+);
+
+const gltfLoader = new GLTFLoader();
+gltfLoader.load("wooden_box.glb", function (gltf) {
+  gltf.scene.position.y = -1;
+  scene.add(gltf.scene);
+});
 
 //! responsiveness
 window.addEventListener("resize", () => {
@@ -169,3 +193,6 @@ function animate() {
 animate();
 
 // renderer.setAnimationLoop(animate);
+
+
+//! ------------------//!*? THREE JS BASIX COMPLETED--------------
